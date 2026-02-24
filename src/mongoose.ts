@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { UserModel, IUser } from './models/user.js';
 import { OrganizationModel, IOrganization } from './models/organization.js';
 import { IProject, ProjectModel } from './models/project.js';
-import { createProject } from './projectService.js';
+import { createProject, deleteProject, getProjectById, listAllProjects, updateProject } from './projectService.js';
 
 async function runDemo() {
   try {
@@ -31,12 +31,44 @@ async function runDemo() {
     const umbrellaId = orgs[1]._id; 
 
     //
-    const proj = {
+    const proj: IProject = {
       title: "Hola",
       description: "Que",
       organization: initechId
     };
-    await createProject(proj);
+    //CREAR PROJECT
+    const project = await createProject(proj);
+    //GET PROJECT BY ID
+    const pro = await getProjectById(project?.id)
+    console.log(pro);
+    //UPDATE PROJECT
+   const newproj: Partial<IProject> = {
+      title: "newHola"
+    };
+    const p = await updateProject(project?.id, newproj)
+    console.log(p);
+    //DELETE PROJECT
+    const po = await deleteProject(project?.id);
+    console.log(po);
+    //LIST ALL PROJECTS
+    const fpro = await listAllProjects();
+    console.log("Lista Vacia:", fpro);
+
+    const proj1: IProject = {
+      title: "test",
+      description: "prueba",
+      organization: initechId
+    };
+    const proj2: IProject = {
+      title: "test2",
+      description: "hola",
+      organization: umbrellaId
+    };
+    await createProject(proj1);
+    await createProject(proj2);
+    const fpro1 = await listAllProjects();
+    console.log(fpro1);
+
     //
 
     // 3.2 Create Users linked to Orgs
